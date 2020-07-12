@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 
-from photos.models import Photo
-from photos.serializers import PhotoSerializer
+from photos.models import Photo, Comment
+from photos.serializers import PhotoSerializer, CommentSerializer
 
 
 class PhotoViewSet(viewsets.ModelViewSet):
@@ -10,3 +10,13 @@ class PhotoViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         return Photo.objects.filter(user=self.kwargs['users_pk'])
+
+
+"""
+ Comment CRUD 
+"""
+
+
+class CommentViewSet(viewsets.ModelViewSet):
+    queryset = Comment.objects.all()
+    serializer_class = CommentSerializer
