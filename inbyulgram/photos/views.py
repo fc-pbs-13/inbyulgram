@@ -12,11 +12,6 @@ class PhotoViewSet(viewsets.ModelViewSet):
         return Photo.objects.filter(user=self.kwargs['users_pk'])
 
 
-"""
- Comment CRUD 
-"""
-
-
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
