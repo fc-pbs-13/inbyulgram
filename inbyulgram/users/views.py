@@ -1,5 +1,4 @@
 from django.contrib.auth import authenticate, login
-from django.core.exceptions import ObjectDoesNotExist
 from rest_framework import viewsets, status
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action
@@ -22,18 +21,18 @@ class UserViewSet(viewsets.ModelViewSet):
         user = authenticate(email=email, password=password)
         if user is not None:
             token, created = Token.objects.get_or_create(user=user)
-            login(request, user)
             return Response({'token': token.key, 'email': user.email}, status=status.HTTP_200_OK)
         else:
             return Response({'message': 'User Does Not Exist.'}, status=status.HTTP_404_NOT_FOUND)
 
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
     @action(detail=False, methods=['delete'])
     def logout(self, request):
-        try:
-            request.user.quth_token.delete()
-            return Response({"message": "Successfully Log Out."}, status.HTTP_200_OK)
-        except (AttributeError, ObjectDoesNotExist):
-            return Response({"message": "Not Authorized User."}, status.HTTP_400_BAD_REQUEST)
+        request.user.auth_token.delete()
+        return Response({"message": "Successfully Log Out."}, status.HTTP_200_OK)
 
 
 class ProfileViewSet(viewsets.ModelViewSet):

@@ -21,15 +21,12 @@ from rest_framework_nested import routers
 from photos.views import PhotoViewSet
 from users.views import UserViewSet, ProfileViewSet
 
-router = routers.SimpleRouter(trailing_slash=True)
+router = routers.SimpleRouter(trailing_slash=False)
 router.register(r'users', UserViewSet)
 router.register(r'accounts', ProfileViewSet)
 
 users_router = routers.NestedSimpleRouter(router, r'users', lookup='users')
 users_router.register(r'photos', PhotoViewSet)
-
-
-
 
 urlpatterns = [
     path('admin/', admin.site.urls),
