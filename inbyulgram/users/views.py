@@ -1,4 +1,4 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate
 from rest_framework import viewsets, status
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action
@@ -27,7 +27,6 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
-
 
     @action(detail=False, methods=['delete'])
     def logout(self, request):
