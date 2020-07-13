@@ -13,7 +13,7 @@ class PhotoSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    user = UserSerializer
+    user = UserSerializer()
     Photo = PhotoSerializer
 
     class Meta:

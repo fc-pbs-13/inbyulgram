@@ -12,9 +12,9 @@ from django.db import models
 
 
 class Profile(models.Model):
-    picture = models.ImageField(null=True, )
+    picture = models.ImageField(null=True)
     username = models.CharField(max_length=50)
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
+    user = models.OneToOneField('auth.User', on_delete=models.CASCADE, null=True)
     introduction = models.TextField()
 
     def __str__(self):

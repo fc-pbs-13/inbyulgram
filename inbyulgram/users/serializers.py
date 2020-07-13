@@ -16,8 +16,10 @@ class ProfileUpdateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
         fields = ['picture', 'username', 'user', 'introduction', ]
-        extra_kwargs = {'email': {'read_only': True}}
+        read_only_fields = ['user']
 
+    def create(self, validated_data):
+        pass
 
 class ProfileCreateSerializer(serializers.ModelSerializer):
     # user = UserSerializer

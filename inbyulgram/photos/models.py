@@ -7,15 +7,15 @@ class Photo(models.Model):
     caption = models.TextField()
     posted_at = models.DateTimeField(auto_now_add=True)
 
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey('auth.User', on_delete=models.CASCADE)
 
     class Meta:
         ordering = ['-id']
 
 
 class Comment(models.Model):
-    photo = models.ForeignKey('Photo', on_delete=models.CASCADE)
-    comment_owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    photo = models.ForeignKey('photos.Photo', on_delete=models.CASCADE)
+    comment_owner = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     description = models.TextField()
     commented_at = models.DateTimeField(auto_now_add=True)
 
