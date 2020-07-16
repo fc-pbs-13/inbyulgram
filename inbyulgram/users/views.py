@@ -1,16 +1,19 @@
 from django.contrib.auth import authenticate
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, mixins
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action
 from rest_framework.response import Response
+from rest_framework.viewsets import GenericViewSet
 
-from users.models import Profile, User
-from users.serializers import UserSerializer, ProfileUpdateSerializer, ProfileCreateSerializer
+from users.models import Profile, User, Like
+from users.permnissions import UserPermissions
+from users.serializers import UserSerializer, ProfileUpdateSerializer, ProfileCreateSerializer, LikeSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
+    permission_classes = [UserPermissions]
 
     @action(detail=False, methods=['post'])
     def login(self, request):
@@ -19,6 +22,7 @@ class UserViewSet(viewsets.ModelViewSet):
         email = serializer.validated_data['email']
         password = serializer.validated_data['password']
         user = authenticate(email=email, password=password)
+
         if user is not None:
             token, created = Token.objects.get_or_create(user=user)
             return Response({'token': token.key, 'email': user.email}, status=status.HTTP_200_OK)
@@ -45,3 +49,20 @@ class ProfileViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+
+class LikeViewSet(mixins.CreateModelMixin,
+                  mixins.RetrieveModelMixin,
+                  mixins.ListModelMixin,
+                  GenericViewSet):
+    queryset = Like.objects.all()
+    serializer_class = LikeSerializer
+    permission_classes = [UserPermissions]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.queryset.filter(user=request.user.id)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)

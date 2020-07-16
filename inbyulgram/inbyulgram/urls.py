@@ -18,8 +18,8 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework_nested import routers
 
-from photos.views import PhotoViewSet
-from users.views import UserViewSet, ProfileViewSet
+from photos.views import PhotoViewSet, CommentViewSet
+from users.views import UserViewSet, ProfileViewSet, LikeViewSet
 
 router = routers.SimpleRouter(trailing_slash=False)
 router.register(r'users', UserViewSet)
@@ -27,9 +27,14 @@ router.register(r'accounts', ProfileViewSet)
 
 users_router = routers.NestedSimpleRouter(router, r'users', lookup='users')
 users_router.register(r'photos', PhotoViewSet)
+users_router.register(r'likes', LikeViewSet)
+
+photo_router = routers.NestedSimpleRouter(users_router, r'photos', lookup='photos')
+photo_router.register(r'comments', CommentViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^', include(router.urls)),
     url(r'^', include(users_router.urls)),
+    url(r'^', include(photo_router.urls)),
 ]
