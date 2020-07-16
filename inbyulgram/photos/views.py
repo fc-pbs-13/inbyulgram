@@ -15,3 +15,6 @@ class PhotoViewSet(viewsets.ModelViewSet):
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
+
+    # def get_queryset(self):
+    #     return Comment.objects.filter(user=self.kwargs['photo_pk'])

@@ -1,11 +1,11 @@
 from rest_framework import serializers
 
 from photos.models import Photo, Comment
-from users.serializers import UserSerializer
+from users.serializers import UserSerializer, PhotoShowSerializer
 
 
 class PhotoSerializer(serializers.ModelSerializer):
-    user = UserSerializer
+    user = PhotoShowSerializer(read_only=True)
 
     class Meta:
         model = Photo
@@ -13,9 +13,9 @@ class PhotoSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
-    user = UserSerializer()
-    Photo = PhotoSerializer
+    user = PhotoShowSerializer(read_only=True)
+    photo = PhotoSerializer(read_only=True)
 
     class Meta:
         model = Comment
-        fields = ['photo', 'comment_owner', 'description', 'commented_at',]
+        fields = ['id', 'photo', 'user', 'description', 'commented_at', ]
